@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge,chrome=1">
+    <link rel="stylesheet" href="/vendor/bootstrap/bootstrap.min.css">
+    <title> {{block 'title'}}我的小说{{/block}}</title>
+    <style>
+        ul,
+        ol {
+            list-style: none;
+        }
+
+        .header .navbar {
+            background-color: #f1ede5;
+        }
+
+        .normal-nav {
+            font-size: 20px;
+        }
+    </style>
+    {{block 'head'}}{{/block}}
+</head>
+
+<body>
+    {{include '../partials/header.html'}}
+
+    {{block 'content'}}{{/block}}
+
+    <script src="/vendor/bootstrap/jquery.min.js"></script>
+    <script src="/vendor/bootstrap/bootstrap.min.js"></script>
+    <script src="/vendor/axios.min.js"></script>
+
+    {{block 'script'}}{{/block}}
+</body>
+
+</html>

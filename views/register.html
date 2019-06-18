@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>我的小说</title>
+    <link rel="stylesheet" href="/vendor/bootstrap/bootstrap.min.css">
+    <style>
+        .wrapper {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 15px;
+        }
+
+        label {
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrapper">
+        <div class="text-center">
+            <img class="img-fluid" src="http://placehold.it/300x100" alt="加载失败">
+            <h1 class="title mt-3">用户注册</h1>
+        </div>
+
+        {{if flash}}
+        <div class="alert alert-danger alert-dismissible fade show mt-3 hidden" role="alert">
+            {{flash.message}}
+        </div>
+        {{/if}}
+
+        {{if form}}
+        <form action="/register" class="border p-3 rounded" method="POST">
+            <input type="hidden" name="_csrf" value="{{_csrfToken}}">
+            <div class="form-group">
+                <label for="email">邮箱</label>
+                <input type="email" class="form-control" id="email" name="email" placeholder="Enter email"
+                    autocomplete="off" required value="{{form.user.email}}">
+            </div>
+            <div class="form-group">
+                <label for="nickName">昵称</label>
+                <input type="text" class="form-control" id="nickName" name="nickName" placeholder="Nick name"
+                    autocomplete="off" required value="{{form.user.nickName}}">
+            </div>
+            <div class="form-group">
+                <label for="password">密码</label>
+                <input type="password" class="form-control" id="password" name="password" placeholder="Password"
+                    required autofocus>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">注册</button>
+        </form>
+        {{else}}
+        <form action="/register" class="border p-3 rounded" method="POST">
+            <input type="hidden" name="_csrf" value="{{_csrfToken}}">
+            <div class="form-group">
+                <label for="email">邮箱</label>
+                <input type="email" class="form-control" id="email" name="email" placeholder="Enter email"
+                    autocomplete="off" autofocus required>
+            </div>
+            <div class="form-group">
+                <label for="nickName">昵称</label>
+                <input type="text" class="form-control" id="nickName" name="nickName" placeholder="Nick name"
+                    autocomplete="off" required>
+            </div>
+            <div class="form-group">
+                <label for="password">密码</label>
+                <input type="password" class="form-control" id="password" name="password" placeholder="Password"
+                    required>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">注册</button>
+        </form>
+        {{/if}}
+
+        <p class="border text-left rounded mt-3 p-2">
+            已有账号? <a href="/login">点击登录</a>
+        </p>
+    </div>
+</body>
+
+</html>

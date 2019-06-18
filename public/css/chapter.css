@@ -1,0 +1,61 @@
+body {
+  background-color: #e7e1d4; }
+
+.n-active {
+  color: #ed4259; }
+
+.fixed {
+  position: fixed;
+  top: 0; }
+
+.n-wrapper {
+  display: flex;
+  position: relative;
+  margin-top: 16px; }
+  .n-wrapper a {
+    color: #000;
+    text-decoration: none; }
+  .n-wrapper .toolbar-container {
+    z-index: 99;
+    display: flex; }
+    .n-wrapper .toolbar-container .n-toolbar {
+      flex-direction: column;
+      justify-content: flex-start;
+      padding: 0; }
+      .n-wrapper .toolbar-container .n-toolbar li {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 60px;
+        height: 60px;
+        background-color: #f6f1e7;
+        margin-bottom: 2px; }
+        .n-wrapper .toolbar-container .n-toolbar li a {
+          color: #58606f; }
+        .n-wrapper .toolbar-container .n-toolbar li a:hover {
+          color: #ed4259; }
+    .n-wrapper .toolbar-container .n-catalog-content {
+      margin-left: 10px;
+      background-color: #fff;
+      box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.3);
+      display: none; }
+      .n-wrapper .toolbar-container .n-catalog-content .close-container {
+        overflow: hidden; }
+        .n-wrapper .toolbar-container .n-catalog-content .close-container .close {
+          font-size: 2.5rem;
+          display: inline-block;
+          align-items: flex-end;
+          margin-right: 10px;
+          margin-top: -5px; }
+      .n-wrapper .toolbar-container .n-catalog-content .table-container {
+        height: 485px;
+        overflow-y: scroll; }
+  .n-wrapper .n-content {
+    margin-left: 10px;
+    background-color: #faf5eb;
+    padding: 60px;
+    margin-bottom: 30px;
+    position: absolute;
+    left: 70px; }
+  .n-wrapper a:hover {
+    color: #ed4259; }

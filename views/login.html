@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>我的小说</title>
+    <link rel="stylesheet" href="/vendor/bootstrap/bootstrap.min.css">
+    <style>
+        .wrapper {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 15px;
+        }
+
+        label {
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrapper">
+        <div class="text-center">
+            <img class="img-fluid mt-3" src="http://placehold.it/300x100" alt="加载失败">
+            <h1 class="title mt-3">登录</h1>
+        </div>
+
+        {{if flash}}
+        <div class="alert alert-danger alert-dismissible fade show mt-3 hidden" role="alert">
+            {{flash.message}}
+        </div>
+        {{/if}}
+
+        {{if form}}
+        <form action="/login" method="POST" class="border p-3 rounded">
+            <input type="hidden" name="_csrf" value="{{_csrfToken}}">
+            <div class="form-group">
+                <label for="userName">用户名（邮箱或者昵称）</label>
+                <input type="text" class="form-control" id="userName" name="userName" placeholder="Enter user name"
+                    autocomplete="off" required value="{{form.user.userName}}">
+            </div>
+            <div class="form-group">
+                <label for="password">密码</label>
+                <input type="password" class="form-control" id="password" name="password" placeholder="Password"
+                    autofocus required>
+            </div>
+            <div class="form-check">
+                <input id="remember_me" class="form-check-input" type="checkbox" name="rememberVal">
+                <label for="remember_me" class="form-check-label">记住我</label>
+            </div>
+            <button type="submit" class="btn btn-primary w-100 mt-2">登录</button>
+        </form>
+        {{else}}
+        <form action="/login" method="POST" class="border p-3 rounded">
+            <input type="hidden" name="_csrf" value="{{_csrfToken}}">
+            <div class="form-group">
+                <label for="userName">用户名（邮箱或者昵称）</label>
+                <input type="text" class="form-control" id="userName" name="userName" placeholder="Enter user name"
+                    autocomplete="off" autofocus required>
+            </div>
+            <div class="form-group">
+                <label for="password">密码</label>
+                <input type="password" class="form-control" id="password" name="password" placeholder="Password"
+                    required>
+            </div>
+            <div class="form-check">
+                <input id="remember_me" class="form-check-input" type="checkbox" name="rememberVal">
+                <label for="remember_me" class="form-check-label">记住我</label>
+            </div>
+            <button type="submit" class="btn btn-primary w-100 mt-2">登录</button>
+        </form>
+        {{/if}}
+        <p class="border text-left rounded mt-3 p-2">
+            还没有账号? <a href="/register">注册</a>
+        </p>
+    </div>
+</body>
+
+</html>

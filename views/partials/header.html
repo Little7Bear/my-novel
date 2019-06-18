@@ -1,0 +1,77 @@
+{{if allNovels}}
+<header class="header" id="header">
+    <div class="container">
+        <nav class="navbar navbar-expand-lg navbar-light">
+            <a class="navbar-brand" href="/">
+                <img src="{{staticMap('/img/novel-brand.svg')}}" width="50" height="40"
+                    class="d-inline-block align-items-center" alt="">
+                我的小说
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto" id="home_navbar">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">玄幻</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">武侠</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">都市</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">历史</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">侦探</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">网游</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">科幻</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">其他</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/crawler">爬取小说</a>
+                    </li>
+                </ul>
+                <form class="form-inline">
+                    <input name="search-val" class="form-control mr-sm-2" type="search" placeholder="搜索本地图书">
+                    <button id="btn_search" class="btn btn-outline-secondary my-2 my-sm-0" type="submit">搜索</button>
+                </form>
+            </div>
+        </nav>
+    </div>
+</header>
+{{else}}
+<header class="header" id="header">
+    <div class="container">
+        <nav class="navbar navbar-expand-lg navbar-light">
+            <a class="navbar-brand" href="/">
+                <img src="{{staticMap('/img/novel-brand.svg')}}" width="50" height="40"
+                    class="d-inline-block align-items-center" alt="">
+                我的小说
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto" id="home_navbar">
+                    <li class="nav-item">
+                        <a class="nav-link normal-nav" href="/crawler">爬取小说</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+</header>
+{{/if}}

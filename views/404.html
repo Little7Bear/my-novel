@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>您要找的页面不存在 - 我的小说</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        .error {
+            width: 100%;
+            max-width: 1440px;
+            margin: 0 auto;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .error h3 {
+            font-weight: bold;
+            margin-top: 45px;
+        }
+
+        .main-img {
+            width: 220px;
+        }
+
+        .sub-title {
+            margin: 20px 0;
+        }
+
+        .follow {
+            padding: 13px 0;
+            width: 160px;
+            font-size: 15px;
+            border-radius: 40px;
+            color: #ffffff;
+            background-color: #42C02E;
+            border-color: #42C02E;
+            display: inline-block;
+            text-align: center;
+            vertical-align: middle;
+            touch-action: manipulation;
+            cursor: pointer;
+            background-image: none;
+            border: 1px solid transparent;
+            white-space: nowrap;
+            user-select: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="error">
+        <img class="main-img" src="{{staticMap('/img/error404.png')}}"
+            alt="Img 404">
+        <h3>您要找的页面不存在</h3>
+        <div class="sub-title">可能是因为您的链接地址有误。</div>
+        <a class="follow" href="/">返回「我的小说」首页</a>
+    </div>
+</body>
+
+</html>

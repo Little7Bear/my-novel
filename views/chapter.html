@@ -1,0 +1,134 @@
+{{extend './layouts/layout.html'}}
+
+{{block 'head'}}
+<link rel="stylesheet" href="/css/chapter.css">
+{{/block}}
+
+{{block 'content'}}
+<main>
+    <div class="container">
+        <div class="n-wrapper">
+            <div id="toolbar" class="toolbar-container">
+                <ul class="n-toolbar d-flex">
+                    <li><a href="javascript:;" id="btn_catalog">目录</a></li>
+                    <li><a href="javascript:;" id="btn_pre">上一章</a></li>
+                    <li><a href="javascript:;" id="btn_next">下一章</a></li>
+                </ul>
+
+                <div class="n-catalog-content" id="catalog">
+                    <div class="close-container">
+                        <button type="button" class="close" id="btn_close">
+                            <span>&times;</span>
+                        </button>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col" id="book_name"></th>
+                                    <th scope="col"></th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="n-content">
+                <h4 id="title">{{chapter.title}}</h4>
+                <div id="content">{{@ chapter.content}}</div>
+            </div>
+            <input type="hidden" name="sort" value="{{chapter.sort}}">
+            <input type="hidden" name="minSort" value="{{minSort}}">
+            <input type="hidden" name="maxSort" value="{{maxSort}}">
+        </div>
+    </div>
+</main>
+{{/block}}
+
+{{block 'script'}}
+<script src="/js/chapter.js"></script>
+<script src="/js/tool.js"></script>
+<script>
+    $(function () {
+        let urlArr = $(location).attr('href').split('/')
+        let bookId = urlArr[urlArr.length - 1]
+        let minSort = Number.parseInt($('input[name=minSort]').val())
+        let maxSort = Number.parseInt($('input[name=maxSort]').val())
+
+        $('#btn_catalog').on('click', () => {
+            $.ajax({
+                type: "get",
+                url: "/chapter/catalog/" + bookId,
+                success: function (res) {
+                    $('#book_name').text(res.bookName)
+
+                    let body = ''
+                    let chapters = res.chapters
+
+                    for (const i of chapters.keys()) {
+                        if (i % 2 !== 0 && i !== 0) {
+                            body +=
+                                `<tr><td><a href="javascript:;" data-sort="${chapters[i-1].sort}">${chapters[i-1].title}</a></td>
+                            <td><a href="javascript:;" data-sort="${chapters[i].sort}">${chapters[i].title}</a></td></<tr>`
+                        }
+                    }
+                    let chaptersLastIndex = chapters.length - 1
+                    if (chaptersLastIndex % 2 === 0) {
+                        body +=
+                            `<tr><td><a href="javascript:;" data-sort="${chapters[chaptersLastIndex].sort}">${chapters[chaptersLastIndex].title}</a></td></<tr>`
+                    }
+                    $('#tbody').html(body)
+
+                    let sort = Number.parseInt($('input[name=sort]').val())
+                    setCurrentChapterBySort(sort)
+                    $('#catalog').fadeIn('fast')
+                }
+            })
+        })
+
+        // 点击目录跳转章节
+        $('#tbody').on('click', (e) => {
+            if (e.target.tagName.toLowerCase() === 'a') {
+                let sort = Number.parseInt($(e.target).attr('data-sort'))
+                sort = limitSort(sort, minSort, maxSort)
+                getChapterBySort(sort, bookId)
+                setCurrentChapterBySort(sort)
+                scrollToTop()
+            }
+        })
+
+        $('#btn_pre').on('click', () => {
+            let sort = Number.parseInt($('input[name=sort]').val()) - 1
+            sort = limitSort(sort, minSort, maxSort)
+            getChapterBySort(sort, bookId, minSort, maxSort)
+            setCurrentChapterBySort(sort)
+            scrollToTop()
+        })
+
+        $('#btn_next').on('click', () => {
+            let sort = Number.parseInt($('input[name=sort]').val()) + 1
+            sort = limitSort(sort, minSort, maxSort)
+            getChapterBySort(sort, bookId)
+            setCurrentChapterBySort(sort)
+            scrollToTop()
+        })
+
+        $('#btn_close').on('click', () => {
+            $('#catalog').fadeOut('fast')
+        })
+
+        // 目录吸顶
+        window.onscroll = function () {
+            let bodyScrollTop = $('body').scrollTop() + $('html').scrollTop()
+            if (bodyScrollTop > $('#header').outerHeight() + 16) {
+                $('#toolbar').addClass('fixed')
+            } else {
+                $('#toolbar').removeClass('fixed')
+            }
+        };
+    })
+</script>
+{{/block}}

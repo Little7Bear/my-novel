@@ -1,0 +1,77 @@
+{{extend './layouts/layout.html'}}
+
+{{block 'head'}}
+<link rel="stylesheet" href="{{staticMap('/css/index.css')}}">
+{{/block}}
+
+{{block 'content'}}
+<main>
+    <div class="text-center mt-3"><a href="http://www.shuquge.com/" target="_blank">书趣阁</a></div>
+
+    <div class="g-container">
+        <input type="hidden" name="_csrf" value="{{_csrfToken}}">
+        <input id="url" type="text" placeholder="请输入要爬取的URL" class="g_input_search">
+        <button id="submit" type="button" class="g_button_search">GO</button>
+    </div>
+
+    <div class="g-container">
+        <input name="inp-recent-update" type="text" placeholder="爬取页面最近更新小说列表" class="g_input_search">
+        <button id="btn_recent_update" type="button" class="g_button_search">GO</button>
+    </div>
+
+    <div id="alert" class="alert alert-primary alert-dismissible fade my-alert">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong id="intro">成功!</strong> <span id="message">指定操作成功提示信息。</span>
+    </div>
+</main>
+{{/block}}
+
+{{block 'script'}}
+<script>
+    function showAlert(response) {
+        let alert = document.querySelector('#alert');
+        let intro = document.querySelector('#intro');
+        let message = document.querySelector('#message');
+        let alertCL = alert.classList;
+        intro.innerHTML = response.data.intro;
+        message.innerHTML = response.data.message;
+        !alertCL.contains('show') && alertCL.add('show');
+    }
+
+    window.onload = () => {
+        let submit = document.querySelector('#submit');
+        let url = document.querySelector('#url');
+        let hintContent = document.querySelector('#hint_content');
+        let hintHtml;
+        let token = document.querySelector('input[name=_csrf]').value;
+
+        submit.addEventListener('click', () => {
+            axios.post('/crawler', {
+                    url: url.value,
+                    _csrf: token
+                })
+                .then(response => {
+                    showAlert(response)
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+        });
+
+        // 爬取最近更新
+        $('#btn_recent_update').on('click', function (e) {
+            $.ajax({
+                type: "post",
+                url: "/crawler/recent-update",
+                data: {
+                    url: $('input[name="inp-recent-update"]').val()
+                },
+                success: function (response) {
+                    console.log('爬取成功');
+                }
+            })
+        })
+
+    }
+</script>
+{{/block}}

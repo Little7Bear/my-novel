@@ -1,0 +1,246 @@
+{{extend './layouts/layout.html'}}
+
+{{block 'head'}}
+<link rel="stylesheet" href="/css/book.css">
+{{/block}}
+
+{{block 'content'}}
+{{if allNovels.docs.length!=0}}
+<div class="container pt-3">
+    <div class="row">
+        {{each allNovels.docs}}
+        <div class="card-container">
+            <div class="card mb-4 shadow-sm">
+                <a href="javascript:;"><img src="{{$value.cover}}" alt="暂无图片" class="card-img-top nimg-cover"></a>
+
+                <div class="card-body">
+                    <h5 class="card-title nnowrap">{{$value.bookName}}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">{{$value.author}}</h6>
+
+                    <div class="ncart-content">
+                        <p>状态：<span class="status">{{$value.status}}</span></p>
+                        <p class="nnowrap" title="{{$value.latestChapter}}">
+                            最新章节：<span class="latest-chapter">{{$value.latestChapter}}</span>
+                        </p>
+                        <p>更新时间：<span class="update-time">{{$value.lastUpdateTime}}</span></p>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center n-button-container">
+                        <div class="btn-group" data-id="{{$value._id}}">
+                            <button type="button" class="btn btn-sm btn-outline-secondary n-update">更新</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary n-del">删除</button>
+                        </div>
+
+                        <small class="text-success n-card-number"></small>
+                    </div>
+
+                </div>
+
+                <div class="n-card-model">
+                    <div class="spinner-border text-primary n-card-spinner" role="status"></div>
+                </div>
+            </div>
+        </div>
+        {{/each}}
+    </div>
+</div>
+
+<!-- 加载动画 -->
+<div class="n-spinner" id="spinner">
+    <div class="spinner-grow text-primary" style="width: 10rem; height: 10rem;" role="status"></div>
+</div>
+
+<input type="hidden" name="page" value="{{allNovels.page}}">
+<input type="hidden" name="pages" value="{{allNovels.pages}}">
+<input type="hidden" name="category-page" value="1">
+<input type="hidden" name="category-pages" value="2">
+
+<h5 class="text-center mt-5 category-tooltip" id="category_tooltip">未找到小说</h5>
+
+{{else}}
+<h5 class="text-center mt-5">暂无小说，<a href="/crawler">去爬取</a>?</h5>
+{{/if}}
+{{/block}}
+
+{{block 'script'}}
+<script src="/vendor/moment-with-locales.min.js"></script>
+<script src="/js/book.js"></script>
+<script>
+    $(function () {
+        $('.row').on('click', (e) => {
+            let class_name = e.target.className.split(' ');
+            let lastName = class_name[class_name.length - 1];
+            let id = null
+            let model = null
+            switch (lastName) {
+                case 'n-update':
+                    id = $(e.target).parent().attr('data-id').replace(/"/g, ' ').trim()
+                    let number = $(e.target).parents('.btn-group').next()
+                    let content = $(e.target).parents('.n-button-container').prev().children()
+                    model = $(e.target).parents('.card-body').next()
+                    model.show()
+
+                    $.ajax({
+                        type: "post",
+                        url: "/book/update",
+                        data: {
+                            id: id
+                        },
+                        dataType: "json",
+                        success: function (res) {
+                            if (res.book) {
+                                content.find('.status').text(res.book.status)
+                                content.find('.latest-chapter').text(res.book
+                                    .latestChapter)
+                                content.find('.latest-chapter').parent().attr('title',
+                                    res.book.latestChapter)
+                                let time = moment(res.book.lastUpdateTime).format(
+                                    'YYYY-MM-DD HH:mm')
+                                content.find('.update-time').text(time)
+                            }
+                            model.hide()
+                            number.text(`+${res.addChpaterNumber}`)
+                            number.fadeIn('fast')
+                            number.fadeOut(5000)
+                        }
+                    })
+                    break
+                case 'n-del':
+                    id = $(e.target).parent().attr('data-id').replace(/"/g, ' ').trim()
+
+                    model = $(e.target).parents('.card-body').next()
+                    model.show()
+
+                    $.ajax({
+                        type: "get",
+                        url: "/book/del",
+                        dataType: "json",
+                        data: {
+                            id: id
+                        },
+                        success: function (response) {
+                            model.hide()
+                            $(e.target).parents('.card-container').remove()
+                        }
+                    })
+                    break
+                case 'nimg-cover':
+                    id = $(e.target).parent().next().find('.btn-group').attr('data-id').replace(/"/g,
+                        ' ').trim()
+                    $(location).attr('href', '/chapter/' + id);
+                    break
+            }
+        })
+
+        // 滚动加载
+        let page = parseInt($('input[name=page]').val()) + 1
+        let pages = parseInt($('input[name=pages]').val())
+        let timer = null
+        window.onscroll = () => {
+            clearTimeout(timer)
+            timer = setTimeout(function () {
+                if (isLoadBook($('.card-container'))) {
+                    let category = $('.active').text().trim() || null
+                    if (category) {
+                        page = parseInt($('input[name=category-page]').val()) + 1
+                        pages = parseInt($('input[name=category-pages]').val())
+                    }
+
+                    if (page <= pages) {
+                        $("#spinner").css("display", "block")
+
+                        $.ajax({
+                            type: "post",
+                            url: "/book",
+                            data: {
+                                page: page,
+                                category: category
+                            },
+                            dataType: "json",
+                            success: function (res) {
+                                loadBook(res.docs)
+
+                                if (category) {
+                                    $('input[name=category-page]').val(res.page)
+                                    $('input[name=category-pages]').val(res.pages)
+                                }
+
+                                $("#spinner").css("display", "none")
+                            }
+                        })
+
+                        if (!category) {
+                            page++
+                        }
+                    }
+                }
+            }, 200)
+        }
+
+        // 导航栏选项卡效果
+        let allLis = $('#home_navbar li')
+        for (let i = 0; i < allLis.length; i++) {
+            const element = allLis[i]
+            $(element).on('click', (e) => {
+                for (let j = 0; j < allLis.length; j++) {
+                    allLis[j].className = 'nav-item'
+                }
+                $(e.target).parent().addClass('active')
+            })
+        }
+
+        // 导航栏切换分类
+        $('#home_navbar').on('click', (e) => {
+            $.ajax({
+                type: "get",
+                url: "/book/getNovelByCategory",
+                data: {
+                    category: e.target.textContent
+                },
+                success: function (res) {
+                    $('.card-container').remove()
+                    if (res.books == '') {
+                        $('#category_tooltip').show()
+                        return
+                    }
+                    $('#category_tooltip').hide()
+                    // 重置分类页码为1
+                    $('input[name=category-page]').val(1)
+
+                    loadBook(res.books)
+                }
+            })
+        })
+
+        $('#btn_search').on('click', function (e) {
+            e.preventDefault()
+            let val = $('input[name=search-val]').val() || null
+
+            if (val) {
+                $.ajax({
+                    type: "post",
+                    url: "/book/search",
+                    data: {
+                        val: val
+                    },
+                    success: function (res) {
+                        $('.card-container').remove()
+                        if (res.docs != '') {
+                            loadBook(res.docs)
+                        } else {
+                            $('#category_tooltip').show()
+                        }
+
+                        // 清除分类选中状态
+                        for (let j = 0; j < allLis.length; j++) {
+                            allLis[j].className = 'nav-item'
+                        }
+                    }
+                });
+            }
+
+        })
+
+    })
+</script>
+{{/block}}
